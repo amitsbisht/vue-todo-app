@@ -1,9 +1,9 @@
 <template>
 	<li>
-		<span class="todo-name" :class="{ completed: todo.isCompleted }">{{
-			todo.name
-		}}</span>
-		<span>
+		<span class="todo-name" :class="{ completed: todo.isCompleted }">
+			{{ todo.name }}
+		</span>
+		<span class="todo-icon-group">
 			<img
 				id="toggleTodoIcon"
 				@click="toggleTodo(todo)"
@@ -49,7 +49,7 @@
 	li {
 		color: #333;
 		list-style: none;
-		background: #ffee56;
+		background: #fff5a3;
 		padding: 12px;
 		margin: 0 0 16px 16px;
 		font-size: 18px;
@@ -59,13 +59,21 @@
 	}
 	.todo-icon {
 		padding-right: 5px;
+		cursor: pointer;
 	}
 	.todo-icon:last-child {
 		padding-right: 0;
+	}
+	.todo-name {
+		word-break: break-all;
 	}
 	.todo-name.completed {
 		text-decoration-line: line-through;
 		text-decoration-thickness: 3px;
 		font-style: italic;
+	}
+	li .todo-icon-group {
+		min-width: 60px;
+		margin-left: 10px;
 	}
 </style>

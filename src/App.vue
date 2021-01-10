@@ -8,8 +8,8 @@
 			<ul class="todo-list" :class="{ active: todos.length > 0 }">
 				<transition-group>
 					<todo-item
-						v-for="(todo, index) in todos"
-						:key="index"
+						v-for="todo in todos"
+						:key="todo.id"
 						:todo="todo"
 						@toggle="toggleTodo"
 						@remove="removeTodo"
@@ -23,6 +23,7 @@
 <script>
 	import TheForm from "./components/TheForm.vue";
 	import TodoItem from "./components/TodoItem.vue";
+	import axios from "axios";
 
 	export default {
 		name: "App",
@@ -33,7 +34,25 @@
 		data() {
 			return {
 				todos: [],
+				todoUrl: process.env.VUE_APP_TODO_REST_URL,
+				todoPathUrl: process.env.VUE_APP_TODO_PATH_URL,
 			};
+		},
+		mounted() {
+			axios
+				.get(`${this.todoUrl}`)
+				.then((res) => {
+					const data = res.data;
+					for (const id in data) {
+						const todo = {
+							id: id,
+							name: data[id].name,
+							isCompleted: data[id].isCompleted,
+						};
+						this.todos.push(todo);
+					}
+				})
+				.catch((error) => console.log(error));
 		},
 		methods: {
 			addTodo(todo) {
@@ -41,14 +60,36 @@
 					name: todo,
 					isCompleted: false,
 				};
-				this.todos.push(newTodo);
+				axios
+					.post(`${this.todoUrl}`, {
+						name: newTodo.name,
+						isCompleted: newTodo.isCompleted,
+					})
+					.then((response) => {
+						newTodo.id = response.data.name;
+						this.todos.push(newTodo);
+					})
+					.catch(function(error) {
+						console.log(error);
+					});
 			},
 			toggleTodo(todo) {
-				todo.isCompleted = !todo.isCompleted;
+				axios
+					.patch(`${this.todoPathUrl}${todo.id}.json`, {
+						isCompleted: !todo.isCompleted,
+					})
+					.then((res) => {
+						todo.isCompleted = !todo.isCompleted;
+					})
+					.catch((error) => console.log(error));
 			},
-			removeTodo(todoToRemove) {
+			removeTodo(removeTodo) {
+				axios
+					.delete(`${this.todoPathUrl}${removeTodo.id}.json`)
+					.then((res) => console.log(res))
+					.catch((error) => console.log(error));
 				const removeTodoIndex = this.todos.findIndex(
-					(todo) => todo == todoToRemove
+					(todo) => todo.id == removeTodo.id
 				);
 				this.todos.splice(removeTodoIndex, 1);
 			},
@@ -57,7 +98,7 @@
 </script>
 
 <style>
-	@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;1,400&display=swap");
+	@import url("https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,400;0,700;1,700&display=swap");
 	*,
 	*::before,
 	*::after {
@@ -68,17 +109,22 @@
 	body,
 	input,
 	button {
-		font-family: "Montserrat", sans-serif;
+		font-family: "Titillium Web", sans-serif;
 	}
 	#app {
 		max-width: 450px;
 		margin: 0 auto;
 	}
+	#app main {
+		background: #fffce3;
+	}
 	h1 {
 		text-align: center;
-		color: khaki;
-		background: #252525;
+		color: #fff;
 		padding: 40px;
+		background: linear-gradient(to right, #f37335, #fdc830);
+		font-weight: 700;
+		font-style: italic;
 	}
 	ul.todo-list {
 		background: #fffce3;

@@ -49,20 +49,24 @@
 	}
 	form input[type="text"] {
 		background: transparent;
-		border: 2px solid #ffc107;
+		border: 2px solid #ed7a33;
 		padding: 8px 10px;
 		font-size: 15px;
 		width: 100%;
 		min-height: 45px;
+	}
+	form input[type="text"]:focus {
+		outline: none;
+		box-shadow: 4px 4px 40px 2px rgb(255 249 193);
 	}
 	form input[type="text"]::placeholder {
 		color: #333;
 	}
 	form input[type="submit"] {
 		width: 100%;
-		border: 2px solid khaki;
+		border: 2px solid #ed7a33;
 		padding: 0px 20px;
-		background: khaki;
+		background: linear-gradient(to right, #f37335, #fdc830);
 		color: white;
 		min-height: 45px;
 		font-weight: 700;
@@ -72,8 +76,8 @@
 		border-color: #f44336;
 	}
 	form .error {
-		color: #f44336;
-		font-size: 13px;
+		color: #333;
+		font-size: 12px;
 		font-weight: 700;
 		letter-spacing: 0.8px;
 	}
